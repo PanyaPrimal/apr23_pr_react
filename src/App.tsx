@@ -5,23 +5,39 @@ import './App.scss';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-import { Category } from './types/Category';
-import { Product } from './types/Product';
-import { User } from './types/User';
+
+interface Category {
+  id: number;
+  title: string;
+  icon: string;
+  ownerId: number;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  categoryId: number;
+}
+
+interface User {
+  id: number;
+  name: string;
+  sex: string;
+}
 
 const App: React.FC = () => {
-  const users: User[] = usersFromServer;
-  const categories: Category[] = categoriesFromServer;
-  const products: Product[] = productsFromServer;
+  const users: User[] = usersFromServer || [];
+  const categories: Category[] = categoriesFromServer || [];
+  const products: Product[] = productsFromServer || [];
 
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [searchValue, setSearchValue] = useState('');
 
-  const handleFilterUser = (userId) => {
+  const handleFilterUser = (userId: number) => {
     setSelectedUser(userId);
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
   };
 
