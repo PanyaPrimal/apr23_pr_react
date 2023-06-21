@@ -26,12 +26,12 @@ interface User {
 }
 
 const App: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [searchValue, setSearchValue] = useState('');
+
   const users: User[] = usersFromServer || [];
   const categories: Category[] = categoriesFromServer || [];
   const products: Product[] = productsFromServer || [];
-
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [searchValue, setSearchValue] = useState('');
 
   const handleFilterUser = (userId: number) => {
     setSelectedUser(userId);
@@ -41,21 +41,25 @@ const App: React.FC = () => {
     setSearchValue(event.target.value);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const getUserNameColor = (sex: 'm' | 'f'): string => (sex === 'm'
     ? 'has-text-link'
     : 'has-text-danger');
 
   const filteredProducts = products.filter((product) => {
     const category = categories.find(cat => cat.id === product.categoryId);
-    const user = users.find(usr => usr.id === category.ownerId);
+    const user = category
+      ? users.find(usr => usr.id === category.ownerId)
+      : null;
 
     if (selectedUser) {
-      return user.id === selectedUser;
+      return user?.id === selectedUser;
     }
 
     return true;
   });
 
+  // eslint-disable-next-line no-unused-vars
   const searchedProducts = filteredProducts.filter((product) => {
     const productName = product.name.toLowerCase();
     const searchValueLower = searchValue.toLowerCase();
